@@ -1,0 +1,23 @@
+type: http_request
+model: http_request
+id: rq_hTu5VkGXme
+createdAt: 2025-04-28T20:08:15.064071
+updatedAt: 2025-04-28T20:11:07.714775
+workspaceId: wk_LmAEydWuW7
+folderId: fl_BdQKiVHerg
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+          "user_id": "fe48d585-1ee1-4334-8a3d-6f6432b062eb",
+          "body": "this is another chirp"
+    }
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Admin Reset
+sortPriority: 0.0
+url: ${[ l88 ]}/admin/reset
+urlParameters: []
