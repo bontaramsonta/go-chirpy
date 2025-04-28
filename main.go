@@ -25,6 +25,14 @@ type User struct {
 	Email     string    `json:"email"`
 }
 
+type Chirp struct {
+	ID        int32     `json:"id"`
+	UserID    uuid.UUID `json:"user_id"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 type apiConfig struct {
 	fileserverHits atomic.Int32
 	dbQueries      *database.Queries
@@ -57,6 +65,24 @@ func (cfg *apiConfig) createUser(ctx context.Context, email string) (User, error
 
 func (cfg *apiConfig) deleteAllUsers(ctx context.Context) error {
 	return cfg.dbQueries.DeleteAllUsers(ctx)
+}
+
+func (cfg *apiConfig) createChirp(ctx context.Context, userID uuid.UUID, body string) (Chirp, error) {
+	chirp, err := cfg.dbQueries.CreateChirp(ctx, database.CreateChirpParams{
+		UserID: userID,
+		Body:   body,
+	})
+	if err != nil {
+		log.Println(err)
+		return Chirp{}, err
+	}
+	return Chirp{
+		ID:        chirp.ID,
+		UserID:    chirp.UserID,
+		Body:      chirp.Body,
+		CreatedAt: chirp.CreatedAt,
+		UpdatedAt: chirp.UpdatedAt,
+	}, nil
 }
 
 func main() {
@@ -121,17 +147,18 @@ func main() {
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(user)
 	})
-	mux.HandleFunc("POST /api/validate_chirp", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /api/chirps", func(w http.ResponseWriter, r *http.Request) {
 		// set response content type
 		w.Header().Set("Content-Type", "application/json")
 
 		// Unmarshal request body into struct
 		b := struct {
-			Body string `json:"body"`
+			UserID uuid.UUID `json:"user_id"`
+			Body   string    `json:"body"`
 		}{}
 		err := json.NewDecoder(r.Body).Decode(&b)
 		if err != nil {
-			http.Error(w, `{"error":"Something went wrong"}`, http.StatusBadRequest)
+			http.Error(w, `{"error":"body json parse failed"}`, http.StatusBadRequest)
 			return
 		}
 		if len(b.Body) > 140 {
@@ -139,8 +166,13 @@ func main() {
 			return
 		}
 		filteredBody := filterProfanity(b.Body)
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf(`{"cleaned_body": "%s"}`, filteredBody)))
+		chirp, err := apiCfg.createChirp(r.Context(), b.UserID, filteredBody)
+		if err != nil {
+			http.Error(w, `{"error":"create chirp failed"}`, http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(chirp)
 	})
 	log.Printf("Server listening on %s\n", addr)
 	err = http.ListenAndServe(addr, mux)
