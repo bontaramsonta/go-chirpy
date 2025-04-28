@@ -1,0 +1,5 @@
+# env stuff
+.env
+
+# builds
+go-chirpy
