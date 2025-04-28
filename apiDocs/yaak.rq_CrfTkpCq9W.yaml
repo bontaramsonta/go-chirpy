@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_CrfTkpCq9W
 createdAt: 2025-04-27T05:42:07.630643
-updatedAt: 2025-04-28T20:10:55.853164
+updatedAt: 2025-04-28T20:57:07.657748
 workspaceId: wk_LmAEydWuW7
 folderId: fl_tRgvzbKnBt
 authentication: {}
@@ -10,7 +10,7 @@ authenticationType: null
 body:
   text: |-
     {
-          "user_id": "fe48d585-1ee1-4334-8a3d-6f6432b062eb",
+          "user_id": "e48ef60b-ffd7-40ba-ad36-4d0479b89178",
           "body": "this is another chirp"
     }
 bodyType: application/json
