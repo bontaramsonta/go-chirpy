@@ -85,6 +85,25 @@ func (cfg *apiConfig) createChirp(ctx context.Context, userID uuid.UUID, body st
 	}, nil
 }
 
+func (cfg *apiConfig) getAllChirps(ctx context.Context) ([]Chirp, error) {
+	dbChirps, err := cfg.dbQueries.GetAllChirps(ctx)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	chirps := make([]Chirp, len(dbChirps))
+	for i, chirp := range dbChirps {
+		chirps[i] = Chirp{
+			ID:        chirp.ID,
+			UserID:    chirp.UserID,
+			Body:      chirp.Body,
+			CreatedAt: chirp.CreatedAt,
+			UpdatedAt: chirp.UpdatedAt,
+		}
+	}
+	return chirps, nil
+}
+
 func main() {
 	godotenv.Load()
 	dbURL := os.Getenv("DB_URL")
@@ -146,6 +165,19 @@ func main() {
 		// unmarshall user to json and write response
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(user)
+	})
+	mux.HandleFunc("GET /api/chirps", func(w http.ResponseWriter, r *http.Request) {
+		// set response content type
+		w.Header().Set("Content-Type", "application/json")
+
+		// get chirps from api
+		chirps, err := apiCfg.getAllChirps(r.Context())
+		if err != nil {
+			http.Error(w, `{"error":"get chirps failed"}`, http.StatusBadRequest)
+			return
+		}
+		// unmarshall chirps to json and write response
+		json.NewEncoder(w).Encode(chirps)
 	})
 	mux.HandleFunc("POST /api/chirps", func(w http.ResponseWriter, r *http.Request) {
 		// set response content type
