@@ -1,0 +1,21 @@
+type: http_request
+model: http_request
+id: rq_bToQqmTdNo
+createdAt: 2025-04-29T19:02:03.252346
+updatedAt: 2025-04-29T19:25:53.164718
+workspaceId: wk_LmAEydWuW7
+folderId: fl_zrPJEZFLff
+authentication:
+  disabled: false
+  token: ${[ response.body.path(request='rq_erWrFijmWj', path='$.refresh_token', behavior='smart') ]}
+authenticationType: bearer
+body:
+  text: "{\n  \"email\": \"foo@bar.com\",\n  \"password\": \"read\"    \n}"
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Refresh Token
+sortPriority: 0.002
+url: ${[ l88 ]}/api/refresh
+urlParameters: []

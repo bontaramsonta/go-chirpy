@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,18 +14,31 @@ import (
 )
 
 const (
-	TokenIssuer = "chirpy"
-	UserIDKey   = "userID"
+	TokenIssuer                = "chirpy"
+	UserIDKey                  = "userID"
+	RefreshTokenKey            = "refreshToken"
+	AccessTokenExpiration      = time.Hour
+	RefreshTokenExpirationDays = 60
 )
 
-func MakeJWT(userID uuid.UUID, tokenSecret string, expiresIn time.Duration) (string, error) {
+func MakeJWT(userID uuid.UUID, tokenSecret string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:    TokenIssuer,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiresIn)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(AccessTokenExpiration)),
 		Subject:   userID.String(),
 	})
 	return token.SignedString([]byte(tokenSecret))
+}
+
+func MakeRefreshToken() (string, error) {
+	// refresh token is a random 256-bit (32-byte) hex-encoded string
+	randBytes := make([]byte, 32)
+	if _, err := rand.Read(randBytes); err != nil {
+		return "", err
+	}
+	refreshToken := hex.EncodeToString(randBytes)
+	return refreshToken, nil
 }
 
 func ValidateJWT(tokenString, tokenSecret string) (uuid.UUID, error) {

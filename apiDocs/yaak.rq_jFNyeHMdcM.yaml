@@ -1,0 +1,21 @@
+type: http_request
+model: http_request
+id: rq_jFNyeHMdcM
+createdAt: 2025-04-29T19:25:56.309954
+updatedAt: 2025-04-29T19:26:22.618164
+workspaceId: wk_LmAEydWuW7
+folderId: fl_zrPJEZFLff
+authentication:
+  disabled: false
+  token: ${[ response.body.path(request='rq_erWrFijmWj', path='$.refresh_token', behavior='smart') ]}
+authenticationType: bearer
+body:
+  text: "{\n  \"email\": \"foo@bar.com\",\n  \"password\": \"read\"    \n}"
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: Revoke Token
+sortPriority: 0.003
+url: ${[ l88 ]}/api/revoke
+urlParameters: []

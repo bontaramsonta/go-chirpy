@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/bontaramsonta/go-chirpy/internal/auth"
+	"github.com/bontaramsonta/go-chirpy/internal/database"
 )
 
 func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) {
 	// parse request body
 	type parameters struct {
-		Email            string `json:"email"`
-		Password         string `json:"password"`
-		ExpiresInSeconds int    `json:"expires_in_seconds"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -32,9 +32,6 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 	if params.Email == "" {
 		respondWithError(w, http.StatusBadRequest, "Email is required", nil)
 		return
-	}
-	if params.ExpiresInSeconds == 0 || params.ExpiresInSeconds > int(time.Hour.Seconds()) {
-		params.ExpiresInSeconds = int(time.Hour.Seconds())
 	}
 
 	authenticationErrResponse := func(err error) {
@@ -55,20 +52,36 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// generate token
-	token, err := auth.MakeJWT(
-		user.ID,
-		cfg.jwtSecret,
-		time.Duration(params.ExpiresInSeconds)*time.Second,
-	)
+	token, err := auth.MakeJWT(user.ID, cfg.jwtSecret)
 	if err != nil {
 		log.Println("Error generating token:", err)
 		respondWithError(w, http.StatusInternalServerError, "Error generating token", err)
 		return
 	}
 
+	// generate refresh token
+	refreshToken, err := auth.MakeRefreshToken()
+	if err != nil {
+		log.Println("Error generating refresh token:", err)
+		respondWithError(w, http.StatusInternalServerError, "Error generating refresh token", err)
+		return
+	}
+
+	// save refresh token
+	if err := cfg.db.SaveRefreshToken(r.Context(), database.SaveRefreshTokenParams{
+		UserID:    user.ID,
+		Token:     refreshToken,
+		ExpiresAt: time.Now().Add(time.Hour * 24 * auth.RefreshTokenExpirationDays),
+	}); err != nil {
+		log.Println("Error saving refresh token:", err)
+		respondWithError(w, http.StatusInternalServerError, "Error saving refresh token", err)
+		return
+	}
+
 	type response struct {
 		User
-		Token string `json:"token"`
+		Token        string `json:"token"`
+		RefreshToken string `json:"refresh_token"`
 	}
 
 	respondWithJSON(w, http.StatusOK, response{
@@ -78,6 +91,7 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 			UpdatedAt: user.UpdatedAt,
 			Email:     user.Email,
 		},
-		Token: token,
+		Token:        token,
+		RefreshToken: refreshToken,
 	})
 }

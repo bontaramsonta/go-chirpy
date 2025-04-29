@@ -3,7 +3,6 @@ package auth
 import (
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -12,8 +11,7 @@ import (
 func TestMakeAndValidateJWT(t *testing.T) {
 	secret := "super-secret-key"
 	userID := uuid.New()
-	// give it a little bit of life
-	tokenString, err := MakeJWT(userID, secret, time.Minute)
+	tokenString, err := MakeJWT(userID, secret)
 	if err != nil {
 		t.Fatalf("makeJWT returned error: %v", err)
 	}
@@ -27,32 +25,13 @@ func TestMakeAndValidateJWT(t *testing.T) {
 	}
 }
 
-// expired‐token: even though we just generated it, it should be treated as expired
-func TestValidateExpiredJWT(t *testing.T) {
-	secret := "another-secret"
-	userID := uuid.New()
-	// expires in the past
-	tokenString, err := MakeJWT(userID, secret, -time.Second)
-	if err != nil {
-		t.Fatalf("makeJWT returned error: %v", err)
-	}
-
-	gotID, err := ValidateJWT(tokenString, secret)
-	if err == nil {
-		t.Fatal("ValidateJWT did not return error for expired token")
-	}
-	if gotID != uuid.Nil {
-		t.Errorf("ValidateJWT returned userID %q for expired token; want Nil", gotID)
-	}
-}
-
 // wrong‐secret: token was not signed with the secret we pass to ValidateJWT
 func TestValidateJWTWrongSecret(t *testing.T) {
 	correctSecret := "correct-secret"
 	wrongSecret := "wrong-secret"
 	userID := uuid.New()
 
-	tokenString, err := MakeJWT(userID, correctSecret, time.Minute)
+	tokenString, err := MakeJWT(userID, correctSecret)
 	if err != nil {
 		t.Fatalf("makeJWT returned error: %v", err)
 	}
@@ -79,7 +58,7 @@ func TestValidateMalformedToken(t *testing.T) {
 func TestValidateTamperedToken(t *testing.T) {
 	secret := "tamper-secret"
 	userID := uuid.New()
-	tokenString, err := MakeJWT(userID, secret, time.Minute)
+	tokenString, err := MakeJWT(userID, secret)
 	if err != nil {
 		t.Fatalf("makeJWT returned error: %v", err)
 	}
