@@ -1,0 +1,29 @@
+type: http_request
+model: http_request
+id: rq_PHbK9QYepW
+createdAt: 2025-04-29T20:38:14.371698
+updatedAt: 2025-04-29T21:32:40.375606
+workspaceId: wk_LmAEydWuW7
+folderId: fl_jSktmhtC2x
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "event": "user.upgraded",
+      "data": {
+        "user_id": "${[ response.body.path(request='rq_MeBZvJsSfF', path='$.id', behavior='smart') ]}"
+      }
+    }
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: 0GbYIYHCIb
+method: POST
+name: Upgrade Red Chirp
+sortPriority: 1000.00073
+url: ${[ l88 ]}/api/polka/webhooks
+urlParameters: []
