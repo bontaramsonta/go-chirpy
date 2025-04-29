@@ -1,14 +1,14 @@
 type: http_request
 model: http_request
-id: rq_MeBZvJsSfF
-createdAt: 2025-04-28T19:29:28.209375
-updatedAt: 2025-04-29T09:45:22.287314
+id: rq_erWrFijmWj
+createdAt: 2025-04-29T09:45:24.607599
+updatedAt: 2025-04-29T09:47:01.806660
 workspaceId: wk_LmAEydWuW7
 folderId: fl_zrPJEZFLff
 authentication: {}
 authenticationType: null
 body:
-  text: "{\n  \"email\": \"foo@bar.com\",\n  \"password\": \"read\"    \n}"
+  text: "{\n  \"email\": \"foo@bar.com\",\n  \"password\": \"readline\"    \n}"
 bodyType: application/json
 description: ''
 headers:
@@ -17,7 +17,7 @@ headers:
   value: application/json
   id: ru0AnAtHV3
 method: POST
-name: Create User
-sortPriority: 0.0
-url: ${[ l88 ]}/api/users
+name: Rename User
+sortPriority: 0.001
+url: ${[ l88 ]}/api/users/login
 urlParameters: []
