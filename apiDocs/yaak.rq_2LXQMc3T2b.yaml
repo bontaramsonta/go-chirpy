@@ -1,0 +1,23 @@
+type: http_request
+model: http_request
+id: rq_2LXQMc3T2b
+createdAt: 2025-04-29T20:06:24.969722
+updatedAt: 2025-04-29T20:11:45.137768
+workspaceId: wk_LmAEydWuW7
+folderId: fl_tRgvzbKnBt
+authentication:
+  token: ${[ response.body.path(request='rq_erWrFijmWj', path='$.token', behavior='smart') ]}
+authenticationType: bearer
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: DELETE
+name: Delete Chirp By ID
+sortPriority: 1000.00085
+url: ${[ l88 ]}/api/chirps/${[ response.body.path(request='rq_CrfTkpCq9W', path='$.id', behavior='smart') ]}
+urlParameters:
+- enabled: true
+  name: ''
+  value: ''
+  id: Jkn5YY04P7

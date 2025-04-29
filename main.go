@@ -60,6 +60,7 @@ func main() {
 	mux.Handle("POST /api/revoke", apiCfg.middlewareCheckRefreshToken(apiCfg.handlerUsersRevoke))
 
 	mux.Handle("POST /api/chirps", apiCfg.middlewareisAuthed(apiCfg.handlerChirpsCreate))
+	mux.Handle("DELETE /api/chirps/{chirpID}", apiCfg.middlewareisAuthed(apiCfg.handlerChirpsDelete))
 	mux.HandleFunc("GET /api/chirps", apiCfg.handlerChirpsRetrieve)
 	mux.HandleFunc("GET /api/chirps/{chirpID}", apiCfg.handlerChirpRetrieve)
 

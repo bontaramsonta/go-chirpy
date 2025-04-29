@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_2qLY7YRH2x
 createdAt: 2025-04-28T20:54:34.399981
-updatedAt: 2025-04-28T20:59:53.685176
+updatedAt: 2025-04-29T20:10:33.218920
 workspaceId: wk_LmAEydWuW7
 folderId: fl_tRgvzbKnBt
 authentication: {}
@@ -14,13 +14,9 @@ headers: []
 method: GET
 name: Get Chirp By ID
 sortPriority: 999.9999
-url: ${[ l88 ]}/api/chirps
+url: ${[ l88 ]}/api/chirps/30
 urlParameters:
-- enabled: true
-  name: chirpID
-  value: '11'
-  id: G9wYnCJpUx
 - enabled: true
   name: ''
   value: ''
-  id: 0nXI4hMyYF
+  id: AHTeQ7Atat
