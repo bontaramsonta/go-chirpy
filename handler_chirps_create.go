@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bontaramsonta/go-chirpy/internal/auth"
 	"github.com/bontaramsonta/go-chirpy/internal/database"
 	"github.com/google/uuid"
 )
@@ -20,9 +21,11 @@ type Chirp struct {
 }
 
 func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request) {
+	// get userID from context
+	userID := r.Context().Value(auth.UserIDKey).(uuid.UUID)
+	// parse body
 	type parameters struct {
-		Body   string    `json:"body"`
-		UserID uuid.UUID `json:"user_id"`
+		Body string `json:"body"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -32,7 +35,7 @@ func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
 	}
-
+	// validate
 	cleaned, err := validateChirp(params.Body)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error(), err)
@@ -41,7 +44,7 @@ func (cfg *apiConfig) handlerChirpsCreate(w http.ResponseWriter, r *http.Request
 
 	chirp, err := cfg.db.CreateChirp(r.Context(), database.CreateChirpParams{
 		Body:   cleaned,
-		UserID: params.UserID,
+		UserID: userID,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create chirp", err)

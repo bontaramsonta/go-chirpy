@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/bontaramsonta/go-chirpy/internal/auth"
 )
@@ -11,8 +12,9 @@ import (
 func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) {
 	// parse request body
 	type parameters struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email            string `json:"email"`
+		Password         string `json:"password"`
+		ExpiresInSeconds int    `json:"expires_in_seconds"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -22,7 +24,7 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
 	}
-	// validations
+	// validations and defaults
 	if params.Password == "" {
 		respondWithError(w, http.StatusBadRequest, "Password is required", nil)
 		return
@@ -30,6 +32,9 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 	if params.Email == "" {
 		respondWithError(w, http.StatusBadRequest, "Email is required", nil)
 		return
+	}
+	if params.ExpiresInSeconds == 0 || params.ExpiresInSeconds > int(time.Hour.Seconds()) {
+		params.ExpiresInSeconds = int(time.Hour.Seconds())
 	}
 
 	authenticationErrResponse := func(err error) {
@@ -49,10 +54,30 @@ func (cfg *apiConfig) handlerUsersLogin(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, User{
-		ID:        user.ID,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
-		Email:     user.Email,
+	// generate token
+	token, err := auth.MakeJWT(
+		user.ID,
+		cfg.jwtSecret,
+		time.Duration(params.ExpiresInSeconds)*time.Second,
+	)
+	if err != nil {
+		log.Println("Error generating token:", err)
+		respondWithError(w, http.StatusInternalServerError, "Error generating token", err)
+		return
+	}
+
+	type response struct {
+		User
+		Token string `json:"token"`
+	}
+
+	respondWithJSON(w, http.StatusOK, response{
+		User: User{
+			ID:        user.ID,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+			Email:     user.Email,
+		},
+		Token: token,
 	})
 }

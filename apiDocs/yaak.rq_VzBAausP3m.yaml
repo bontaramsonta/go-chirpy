@@ -1,14 +1,19 @@
 type: http_request
 model: http_request
-id: rq_erWrFijmWj
-createdAt: 2025-04-29T09:45:24.607599
-updatedAt: 2025-04-29T15:06:43.610485
+id: rq_VzBAausP3m
+createdAt: 2025-04-29T15:08:33.610312
+updatedAt: 2025-04-29T15:09:20.386958
 workspaceId: wk_LmAEydWuW7
 folderId: fl_zrPJEZFLff
 authentication: {}
 authenticationType: null
 body:
-  text: "{\n  \"email\": \"foo@bar.com\",\n  \"password\": \"read\"    \n}"
+  text: |-
+    {
+      "email": "foo@bar.com",
+      "password": "read",
+      "expires_in_seconds": 60
+    }
 bodyType: application/json
 description: ''
 headers:
@@ -17,7 +22,7 @@ headers:
   value: application/json
   id: ru0AnAtHV3
 method: POST
-name: Login User
-sortPriority: 0.001
+name: Login User w/ expiry
+sortPriority: 0.002
 url: ${[ l88 ]}/api/login
 urlParameters: []

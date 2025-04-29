@@ -2,16 +2,17 @@ type: http_request
 model: http_request
 id: rq_CrfTkpCq9W
 createdAt: 2025-04-27T05:42:07.630643
-updatedAt: 2025-04-28T20:57:07.657748
+updatedAt: 2025-04-29T16:16:08.290149
 workspaceId: wk_LmAEydWuW7
 folderId: fl_tRgvzbKnBt
-authentication: {}
-authenticationType: null
+authentication:
+  disabled: false
+  token: ${[ response.body.path(request='rq_erWrFijmWj', path='$.token', behavior='smart') ]}
+authenticationType: bearer
 body:
   text: |-
     {
-          "user_id": "e48ef60b-ffd7-40ba-ad36-4d0479b89178",
-          "body": "this is another chirp"
+          "body": "this is first chirp"
     }
 bodyType: application/json
 description: ''
@@ -24,4 +25,8 @@ method: POST
 name: Create Chirp
 sortPriority: 1000.0
 url: ${[ l88 ]}/api/chirps
-urlParameters: []
+urlParameters:
+- enabled: true
+  name: ''
+  value: ''
+  id: ZzrXhvXGeV
