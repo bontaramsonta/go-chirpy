@@ -2,16 +2,13 @@ type: http_request
 model: http_request
 id: rq_MeBZvJsSfF
 createdAt: 2025-04-28T19:29:28.209375
-updatedAt: 2025-04-28T20:11:19.133256
+updatedAt: 2025-04-29T09:14:06.186104
 workspaceId: wk_LmAEydWuW7
 folderId: fl_zrPJEZFLff
 authentication: {}
 authenticationType: null
 body:
-  text: |-
-    {
-          "email": "foo@bar.com"
-    }
+  text: "{\n  \"email\": \"foo@bar.com\",\n  \"password\": \"read\"    \n}"
 bodyType: application/json
 description: ''
 headers:
