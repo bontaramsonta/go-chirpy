@@ -1,0 +1,27 @@
+type: http_request
+model: http_request
+id: rq_vos7xq2EXw
+createdAt: 2025-04-30T08:51:34.125498
+updatedAt: 2025-04-30T08:52:53.232793
+workspaceId: wk_LmAEydWuW7
+folderId: fl_tRgvzbKnBt
+authentication: {}
+authenticationType: null
+body:
+  text: ''
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Get Author Chirps
+sortPriority: 0.001
+url: ${[ l88 ]}/api/chirps
+urlParameters:
+- enabled: true
+  name: author_id
+  value: ${[ response.body.path(request='rq_erWrFijmWj', path='$.id', behavior='smart') ]}
+  id: h9WTWPyG3p
+- enabled: true
+  name: ''
+  value: ''
+  id: mUrxmscZEj
