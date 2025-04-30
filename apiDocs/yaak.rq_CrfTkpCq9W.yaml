@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_CrfTkpCq9W
 createdAt: 2025-04-27T05:42:07.630643
-updatedAt: 2025-04-30T08:51:05.928618
+updatedAt: 2025-04-30T09:19:58.190339
 workspaceId: wk_LmAEydWuW7
 folderId: fl_tRgvzbKnBt
 authentication:
@@ -12,7 +12,7 @@ authenticationType: bearer
 body:
   text: |-
     {
-          "body": "this is another author chirp"
+          "body": "this is second chirp"
     }
 bodyType: application/json
 description: ''

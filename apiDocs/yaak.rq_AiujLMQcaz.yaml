@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_AiujLMQcaz
 createdAt: 2025-04-28T19:49:13.173231
-updatedAt: 2025-04-28T20:10:55.852919
+updatedAt: 2025-04-30T09:29:14.954469
 workspaceId: wk_LmAEydWuW7
 folderId: fl_tRgvzbKnBt
 authentication: {}
@@ -16,4 +16,12 @@ method: GET
 name: Get All Chirps
 sortPriority: 0.0
 url: ${[ l88 ]}/api/chirps
-urlParameters: []
+urlParameters:
+- enabled: true
+  name: sort
+  value: desc
+  id: DF4GYB2n2E
+- enabled: true
+  name: ''
+  value: ''
+  id: x0Wq3ztNvv
